@@ -40,7 +40,7 @@ search_type(string): Value of 'type' in "payload" dictionary.
 keyword(string): Value of 'keyword' in "payload" dictionary.
 
 Return:
-store_data(tuple): return a list of store's name and address
+store_data(tuple): return store's name and address
 
 """
 lat = getlocation()[0]
