@@ -1,11 +1,15 @@
+# -*- coding: utf-8 -*-
 import os
 import sys
 import json
-
 import requests
 from flask import Flask, request
+import apiai as AI
+from locate import get_locations
 
 
+CLIENT_ACCESS_TOKEN = os.environ["AI_CLIENT_ACCESS_TOKEN"]
+MESSENGER_TOKEN = os.environ["PAGE_ACCESS_TOKEN"]
 app = Flask(__name__)
 
 
@@ -48,8 +52,13 @@ def messenger_webhook():
                     recipient_id = messaging_event["recipient"]["id"]
                     # the message's text
                     message_text = messaging_event["message"]["text"]
-                    # for now, the respond will be "roger that!"
-                    send_message(sender_id, "roger that!")
+                    # send user's message to AI API to get response
+                    action, speech = get_response(message_text, sender_id)
+                    locations = get_locations()
+                    send_message(sender_id, speech)
+                    if locations:
+                        speech = locations
+                        send_message(sender_id, speech)
 
                 # delivery confirmation
                 if messaging_event.get("delivery"):
@@ -74,7 +83,7 @@ def send_message(recipient_id, message_text=None):
         recipient=recipient_id, text=message_text))
 
     params = {
-        "access_token": os.environ["PAGE_ACCESS_TOKEN"]
+        "access_token": MESSENGER_TOKEN
     }
     headers = {
         "Content-Type": "application/json"
@@ -94,6 +103,24 @@ def send_message(recipient_id, message_text=None):
     if r.status_code != 200:
         log(r.status_code)
         log(r.text)
+
+
+def get_response(message, session_id):
+    """ Get response from AI
+
+    :param message:
+    :param session_id:
+    :rtype tuple:
+    """
+    ai = AI.ApiAI(CLIENT_ACCESS_TOKEN)
+    request = ai.text_request()
+    request.session_id = session_id
+    request.query = message
+    response = json.loads(request.getresponse().read())
+    action = response['result']['action']
+    speech = response['result']['fulfillment']['speech']
+
+    return action, speech
 
 
 def log(message, entity=None):
