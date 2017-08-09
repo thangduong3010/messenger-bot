@@ -3,17 +3,21 @@
 import os, sys
 import requests
 
-KEY = os.getenv('key')
-str = raw_input('Enter your location: \n')
+KEY = os.getenv('KEY')
 	
-def getlocation():
-	"""This function returns the location of given places.
-  
+def user_location(location=raw_input('Enter your location: \n')):
+	
+	"""This function returns the lattitude and longtitude of user's location.
+	Agrs:
+		location(string): User's location.
+		
 	Return:
-		:rtype tuple: (lat, lng)
+		lat(float): Latitude of the location.
+		lng(float): Longtitude of the location.
 	"""
+	
 	payload = {
-			'query': str, 
+			'query': location, 
 			'key': KEY
 	}
 	url = 'https://maps.googleapis.com/maps/api/place/textsearch/json?'
@@ -26,21 +30,17 @@ def getlocation():
 		
 	return lat, lng
 	
-
-def store_result(search_type = 'electronics_store', keyword = 'sieu+thi+dien+may'):
+def store_location(search_type = 'electronics_store', keyword = 'sieu thi dien may'):
 	
 	"""This function returns a list of nearest electronic stores around given places.
 	
 	Params:
 		search_type(string): Value of 'type' in "payload" dictionary.
 		keyword(string): Value of 'keyword' in "payload" dictionary.
-		
-	Return:
-		:rtype tuple: store_data
-	
 	"""
-	lat = getlocation()[0]
-	lng = getlocation()[1]
+	
+	keyword.replace("", "+")
+	lat, lng = user_location()
 	payload = { 
 			'radius': 4000, 
 			'type': search_type, 
@@ -54,7 +54,4 @@ def store_result(search_type = 'electronics_store', keyword = 'sieu+thi+dien+may
 	for item in output['results']:
 		name = item['name']
 		address = item['vicinity']
-		store_data = (name, address)
-		yield store_data
-	
-print list(store_result())
+		yield name, address
