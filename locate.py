@@ -8,12 +8,11 @@ KEY = os.getenv('KEY')
 def user_location(location=raw_input('Enter your location: \n')):
 	
 	"""This function returns the lattitude and longtitude of user's location.
-	Agrs:
+	Param:
 		location(string): User's location.
 		
 	Return:
-		lat(float): Latitude of the location.
-		lng(float): Longtitude of the location.
+		:rtype tuple: (lat, lng)
 	"""
 	
 	payload = {
@@ -37,6 +36,8 @@ def store_location(search_type = 'electronics_store', keyword = 'sieu thi dien m
 	Params:
 		search_type(string): Value of 'type' in "payload" dictionary.
 		keyword(string): Value of 'keyword' in "payload" dictionary.
+	Return:
+		:rtype tuple: (name, address)
 	"""
 	
 	keyword.replace("", "+")
