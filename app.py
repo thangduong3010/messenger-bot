@@ -8,8 +8,8 @@ import apiai as AI
 from locate import get_locations
 
 
-CLIENT_ACCESS_TOKEN = os.environ["AI_CLIENT_ACCESS_TOKEN"]
-MESSENGER_TOKEN = os.environ["PAGE_ACCESS_TOKEN"]
+CLIENT_ACCESS_TOKEN = os.environ["API_AI"]
+MESSENGER_TOKEN = os.environ["FB_MESSENGER"]
 app = Flask(__name__)
 
 
@@ -33,7 +33,7 @@ def verify():
 @app.route('/messenger', methods=['POST'])
 def messenger_webhook():
     """ endpoint for processing incoming messaging events
-    
+
     :rtype tuple: (message, return code)
     """
     data = request.get_json()
