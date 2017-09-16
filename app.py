@@ -30,7 +30,7 @@ def verify():
     return "Hello world", 200
 
 
-@app.route('/messenger', methods=['POST'])
+@app.route('/', methods=['POST'])
 def messenger_webhook():
     """ endpoint for processing incoming messaging events
 
